@@ -15,7 +15,7 @@ const educationSchema = new mongoose.Schema({
     }
 });
 
-const workSchema = new mongoose.model({
+const workSchema = new mongoose.Schema({
     company: {
         type: String,
         default: ""
@@ -30,7 +30,7 @@ const workSchema = new mongoose.model({
     }
 });
 
-const ProfileSchema = new mongoose.model({
+const ProfileSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"

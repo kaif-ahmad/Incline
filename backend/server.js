@@ -17,7 +17,7 @@ app.use(userRoutes);
 
 const start = async () => {
   try {
-    await mongoose.connect("mongodb+srv://...");
+    await mongoose.connect("mongodb+srv://kaifthehero133_db_user:g0l5iJXFlQRvT5pZ@cluster0.aqowmjk.mongodb.net/?appName=Cluster0");
     app.listen(9090, () => {
       console.log("Server on 9090");
     });
