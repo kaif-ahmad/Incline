@@ -14,15 +14,22 @@ app.use(express.json());
 
 app.use(postRoutes);
 app.use(userRoutes);
+app.use(express.static("uploads"))
 
 const start = async () => {
-  try {
-    await mongoose.connect("mongodb+srv://kaifthehero133_db_user:g0l5iJXFlQRvT5pZ@cluster0.aqowmjk.mongodb.net/?appName=Cluster0");
-    app.listen(9090, () => {
-      console.log("Server on 9090");
-    });
-  } catch (error) {
-    console.error("Database connection error:", error);
+  let connected = false;
+  while (!connected) {
+    try {
+      await mongoose.connect("mongodb+srv://kaifthehero133_db_user:g0l5iJXFlQRvT5pZ@cluster0.aqowmjk.mongodb.net/incline?retryWrites=true&w=majority&appName=Cluster0");
+      console.log("Connected to MongoDB");
+      connected = true;
+      app.listen(9090, () => {
+        console.log("Server on 9090");
+      });
+    } catch (error) {
+      console.error("Connection failed, retrying in 3s...", error.message);
+      await new Promise(resolve => setTimeout(resolve, 3000));
+    }
   }
 };
 start();
