@@ -17,7 +17,7 @@ export const createPost = async (req, res) =>{
             userId: user._id,
             body: req.body.body,
             media: req.file != undefined ? req.file.filename : "",
-            fileTypes: req.file != undefined ? req.file.mimetype.split("/")[1] : ""
+            fileType: req.file != undefined ? req.file.mimetype.split("/")[1] : ""
         });
 
         await post.save();
@@ -48,7 +48,7 @@ export const deletePost = async(req, res)=>{
 
         if(post.userId.toString() != user._id.toString()) return res.status(401).json({message: "Unauthorized"});
     
-        await Post.deletePost({ _id: post_id });
+        await Post.deleteOne({ _id: post_id });
 
         return res.json({message: "Post Deleted"}); 
 
@@ -68,7 +68,7 @@ export const commentPost = async (req, res) => {
         const comment = new Comment({
             userId: user._id,
             postId: post_id,
-            comment: commentBody
+            body: commentBody
         });
 
         await comment.save();
@@ -76,20 +76,20 @@ export const commentPost = async (req, res) => {
         return res.status(200).json({json: "Comment added"});
 
     }catch(err){
-        return res.status(500).json({message: e.message});
+        return res.status(500).json({message: err.message});
     }
 }
 
 export const get_comments_by_post = async (req, res) => {
-    const { post_id } = req.body;
-    try{
-        const post = await Post.findOne({_id: post_id});
-        if(!post) return res.status(404).json({message:"Post Not Found"});
-        return res.json({comments: post.comments});
-    }catch(e){
-        return res.status(500).json({message: e.message});
+    const post_id = req.query.post_id || req.body.post_id;
+    try {
+        const comments = await Comment.find({ postId: post_id })
+            .populate('userId', 'name username profilePicture');
+        return res.json({ comments });
+    } catch (e) {
+        return res.status(500).json({ message: e.message });
     }
-}
+};
 
 export const delete_comment_of_user = async (req, res)=>{
     const { token, comment_id } = req.body;

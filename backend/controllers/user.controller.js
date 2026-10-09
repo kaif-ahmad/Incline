@@ -143,7 +143,7 @@ export const getUserAndProfile = async (req,res) =>{
     }
 }
 
-export const  updateProfileData = async (req,res) =>{
+export const updateProfileData = async (req,res) =>{
     try{
         const { token, ...newProfileData} = req.body;
         const userProfile = await User.findOne({token: token});
@@ -197,6 +197,8 @@ export const sendConnectionRequest = async (req,res) => {
             userId: user._id,   
             connectionId: connectionUser._id
         });
+
+        if (existingRequest) return res.status(400).json({ message: "Request already sent" });
 
         const request = new ConnectionRequest({
             userId: user._id,
